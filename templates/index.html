@@ -1,0 +1,18 @@
+<!doctype html>
+<html>
+<head></head>
+<body>
+<form name="f_get" action="/get" method="get">
+    GET:
+    <input name="name" type="text" value="{{ name }}">
+    <button type="submit">Submit</button>
+</form>
+<form name="f_post" action="/post" method="post">
+    POST:
+    <input name="name" type="text" value="{{ name }}">
+    <button type="submit">Submit</button>
+</form>
+{{ name }}
+{{ text }}
+</body>
+</html>
