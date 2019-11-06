@@ -1,0 +1,9 @@
+[package]
+name = "ractix-web"
+version = "0.1.0"
+authors = ["yo1000 <i@yo1000.com>"]
+edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
