@@ -1,4 +1,6 @@
 #[macro_use]
+extern crate serde_derive;
+#[macro_use]
 extern crate tera;
 
 use std::collections::HashMap;
@@ -31,25 +33,19 @@ fn get(
     query: web::Query<HashMap<String, String>>,
 ) -> Result<HttpResponse, Error> {
     // Get param in parsed query-string
-    let s: String = match query.get("name") {
-        Some(name) => {
-            // submitted form
-            let mut ctx = tera::Context::new();
-            ctx.insert("name", &name.to_owned());
-            ctx.insert("text", &"Welcome!".to_owned());
+    let empty = &String::from("");
 
-            tmpl.render("index.html", &ctx)
-                .map_err(|_| error::ErrorInternalServerError("Template error"))?
-        }
-        None => {
-            let mut ctx = tera::Context::new();
-            ctx.insert("name", "");
-            ctx.insert("text", "");
+    let name = query.get("name").unwrap_or(empty);
+    let message = query.get("message").unwrap_or(empty);
+    let vec = &vec![10, 20, 30];
 
-            tmpl.render("index.html", &ctx)
-                .map_err(|_| error::ErrorInternalServerError("Template error"))?
-        }
-    };
+    let mut ctx = tera::Context::new();
+    ctx.insert("name", name);
+    ctx.insert("message", &format!("{} GET!", message));
+    ctx.insert("vec", vec);
+
+    let s = tmpl.render("index.html", &ctx)
+        .map_err(|_| error::ErrorInternalServerError("Template error"))?;
 
     Ok(HttpResponse::Ok()
         .content_type("text/html")
@@ -58,9 +54,32 @@ fn get(
 }
 
 #[post("/post")]
-fn post() -> impl Responder {
-    HttpResponse::Ok()
-        .body("POST!!")
+fn post(
+    tmpl: web::Data<tera::Tera>,
+    params: web::Form<Example>,
+) -> Result<HttpResponse, Error> {
+    let name = &params.name;
+    let message = &params.message;
+    let vec = &vec![90, 80, 70];
+
+    let mut ctx = tera::Context::new();
+    ctx.insert("name", name);
+    ctx.insert("message", &format!("{} POST!!", message));
+    ctx.insert("vec", vec);
+
+    let s = tmpl.render("index.html", &ctx)
+        .map_err(|_| error::ErrorInternalServerError("Template error"))?;
+
+    Ok(HttpResponse::Ok()
+        .content_type("text/html")
+        .body(s)
+    )
+}
+
+#[derive(Serialize, Deserialize)]
+pub struct Example {
+    name: String,
+    message: String,
 }
 
 fn main() {

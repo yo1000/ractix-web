@@ -5,14 +5,20 @@
 <form name="f_get" action="/get" method="get">
     GET:
     <input name="name" type="text" value="{{ name }}">
+    <input name="message" type="text" value="{{ message }}">
     <button type="submit">Submit</button>
 </form>
 <form name="f_post" action="/post" method="post">
     POST:
     <input name="name" type="text" value="{{ name }}">
+    <input name="message" type="text" value="{{ message }}">
     <button type="submit">Submit</button>
 </form>
-{{ name }}
-{{ text }}
+<p>{{ name }} {{ message }}</p>
+<ul>
+    {% for v in vec %}
+    <li>{{ v }}</li>
+    {% endfor %}
+</ul>
 </body>
 </html>
